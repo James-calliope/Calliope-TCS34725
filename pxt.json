@@ -1,0 +1,18 @@
+{
+    "name": "TCS34725",
+    "version": "1.0.0",
+    "description": "makecode TCS34725 Sensor Package for micro:bit",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*",
+        "radio": "*"
+    },
+    "files": [
+        "README.md",
+        "main.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "public": true
+}
