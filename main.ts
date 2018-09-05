@@ -222,7 +222,7 @@ namespace TCS34725_I2C {
         n = (100*xc - 33) / (18- 100*yc);
 
         /* Calculate the final CCT */
-        cct =((449* Math.pow(n, 3))/1000000 + (3525 * Math.pow(n, 2))/10000 + (6823 * n)/100 + 5520);
+        cct =((449* Math.pow(n, 3)) + (3525 * Math.pow(n, 2)) + (6823 * n) + 5520);
 
         /* Return the results in degrees Kelvin */
         return cct;
