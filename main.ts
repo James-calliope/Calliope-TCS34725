@@ -253,15 +253,15 @@ namespace TCS34725_I2C {
      */
     //% blockId="GET_G_COLOR_DATA" block="get_G_data"
     //% weight=90 blockGap=8
-    export function get_G_data() : number{
-        return r;
+    export function get_g_data() : number{
+        return g;
   }
        /**
      * get B color data.
      */
     //% blockId="GET_B_COLOR_DATA" block="get_B_data"
     //% weight=90 blockGap=8
-    export function get_B_data() : number{
+    export function get_b_data() : number{
         return b;
   }
 }
