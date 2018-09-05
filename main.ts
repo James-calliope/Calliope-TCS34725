@@ -74,12 +74,13 @@ namespace TCS34725_I2C {
     let _tcs34725IntegrationTime:tcs34725IntegrationTime_t; 
 
     function setreg(reg: number, dat: number): void {
-        let buf = pins.createBuffer(2);
-        buf[0] = TCS34725_COMMAND_BIT | reg;
-        buf[1] = dat;
-        pins.i2cWriteBuffer(TCS34725_ADDRESS, buf);
+        //let buf = pins.createBuffer(2);
+        //buf[0] = TCS34725_COMMAND_BIT | reg;
+        //buf[1] = dat&0xFF;
+        // pins.i2cWriteBuffer(TCS34725_ADDRESS, buf);
+        pins.i2cWriteNumber(TCS34725_ADDRESS, TCS34725_COMMAND_BIT|reg, NumberFormat.UInt8BE);
+        pins.i2cWriteNumber(TCS34725_ADDRESS,  dat&0xFF, NumberFormat.UInt8BE);
     }
-
     function getreg(reg: number): number {
         pins.i2cWriteNumber(TCS34725_ADDRESS, TCS34725_COMMAND_BIT | reg, NumberFormat.UInt8BE);
         return pins.i2cReadNumber(TCS34725_ADDRESS, NumberFormat.UInt8BE);
@@ -141,9 +142,10 @@ namespace TCS34725_I2C {
     //% weight=100 blockGap=8 color=#000011
     export function init_TCS34725(): number { 
         /* Make sure we're actually connected */
+        let x:number;
         _tcs34725Gain=tcs34725Gain_t.TCS34725_GAIN_1X;
-         _tcs34725IntegrationTime=tcs34725IntegrationTime_t.TCS34725_INTEGRATIONTIME_700MS; 
-        let x:number = getreg(TCS34725_ID);
+        _tcs34725IntegrationTime=tcs34725IntegrationTime_t.TCS34725_INTEGRATIONTIME_2_4MS; 
+        x = getreg(TCS34725_ID);
         if ((x != 0x44) && (x != 0x10))
         {
           return 0;
@@ -213,10 +215,10 @@ namespace TCS34725_I2C {
         yc = (Y) / (X + Y + Z);
 
         /* 3. Use McCamy's formula to determine the CCT    */
-         n = (xc - 33) / (18- yc);
+         n = (100*xc - 33) / (18- 100*yc);
 
         /* Calculate the final CCT */
-        cct =((449* Math.pow(n, 3)) + (3525 * Math.pow(n, 2)) + (6823 * n) + 5520)/100;
+        cct =((449* Math.pow(n, 3))/1000000 + (3525 * Math.pow(n, 2))/10000 + (6823 * n)/100 + 5520);
 
         /* Return the results in degrees Kelvin */
         return cct;
