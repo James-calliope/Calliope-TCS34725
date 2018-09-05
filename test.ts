@@ -7,10 +7,10 @@ let colorTemp:number =0;
 let lux =0;
 let err_code = TCS34725_I2C.init_TCS34725();
 basic.forever(() => {
-    TCS34725_I2C.getRawData(r, g, b, c);
-    colorTemp = TCS34725_I2C.calculateColorTemperature(r, g, b);
+    TCS34725_I2C.getRawData();
+    colorTemp = TCS34725_I2C.calculateColorTemperature();
     serial.writeValue("colorTemp",colorTemp);
-    lux = TCS34725_I2C.calculateLux(r, g, b);
+    lux = TCS34725_I2C.calculateLux();
     serial.writeValue("lux",lux)
     basic.pause(1000)
 })

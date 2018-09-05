@@ -72,6 +72,10 @@ namespace TCS34725_I2C {
     let _tcs34725Initialised:number;
     let _tcs34725Gain:tcs34725Gain_t;
     let _tcs34725IntegrationTime:tcs34725IntegrationTime_t; 
+    let r:number;
+    let g:number;
+    let b:number;
+    let c:number;
 
     function setreg(reg: number, dat: number): void {
         //let buf = pins.createBuffer(2);
@@ -160,7 +164,7 @@ namespace TCS34725_I2C {
      * get raw data
      */
     //% weight=100 blockGap=8 color=#000011
-    export function getRawData (r:number, g:number, b:number, c:number):void{
+    export function getRawData ():void{
         c = getUInt16LE(TCS34725_CDATAL);
         r = getUInt16LE(TCS34725_RDATAL);
         g = getUInt16LE(TCS34725_GDATAL);
@@ -192,7 +196,7 @@ namespace TCS34725_I2C {
      */
     //% blockId="CALCULATE_TEMPERATURE" block="calculate_color_temperature"
     //% weight=90 blockGap=8
-    export function calculateColorTemperature(r:number, g:number, b:number):number{
+    export function calculateColorTemperature():number{
 
         let X:number;
         let Y:number;
@@ -215,7 +219,7 @@ namespace TCS34725_I2C {
         yc = (Y) / (X + Y + Z);
 
         /* 3. Use McCamy's formula to determine the CCT    */
-         n = (100*xc - 33) / (18- 100*yc);
+        n = (100*xc - 33) / (18- 100*yc);
 
         /* Calculate the final CCT */
         cct =((449* Math.pow(n, 3))/1000000 + (3525 * Math.pow(n, 2))/10000 + (6823 * n)/100 + 5520);
@@ -228,7 +232,7 @@ namespace TCS34725_I2C {
      */
     //% blockId="CALCULATE_LUX" block="calculateLux"
     //% weight=90 blockGap=8
-    export function calculateLux( r:number,  g:number, b:number) : number{
+    export function calculateLux() : number{
           let illuminance:number;
           /* This only uses RGB ... how can we integrate clear or calculate lux */
           /* based exclusively on clear since this might be more reliable?      */
@@ -236,4 +240,28 @@ namespace TCS34725_I2C {
     
           return illuminance;
     }
+     /**
+     * get r color data.
+     */
+    //% blockId="GET_R_COLOR_DATA" block="get_r_data"
+    //% weight=90 blockGap=8
+    export function get_r_data() : number{
+        return r;
+  }
+       /**
+     * get G color data.
+     */
+    //% blockId="GET_G_COLOR_DATA" block="get_G_data"
+    //% weight=90 blockGap=8
+    export function get_G_data() : number{
+        return r;
+  }
+       /**
+     * get B color data.
+     */
+    //% blockId="GET_B_COLOR_DATA" block="get_B_data"
+    //% weight=90 blockGap=8
+    export function get_B_data() : number{
+        return b;
+  }
 }
