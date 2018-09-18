@@ -78,10 +78,6 @@ namespace TCS34725_I2C {
     let c:number;
 
     function setreg(reg: number, dat: number): void {
-        //let buf = pins.createBuffer(2);
-        //buf[0] = TCS34725_COMMAND_BIT | reg;
-        //buf[1] = dat&0xFF;
-        // pins.i2cWriteBuffer(TCS34725_ADDRESS, buf);
         pins.i2cWriteNumber(TCS34725_ADDRESS, TCS34725_COMMAND_BIT|reg, NumberFormat.UInt8BE);
         pins.i2cWriteNumber(TCS34725_ADDRESS,  dat&0xFF, NumberFormat.UInt8BE);
     }
@@ -105,46 +101,31 @@ namespace TCS34725_I2C {
         basic.pause(3);
         setreg(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
     }
-    /**
-     * disable TCS34725 (lx)
-     */
-    //% blockId="DISABLE_TCS34725" block="disable (lx)"
-    //% weight=80 blockGap=8
-    export function disable(): void { 
+    function disable(): void { 
       let reg = 0;
       reg = getreg(TCS34725_ENABLE);
       setreg(TCS34725_ENABLE, reg & ~(TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN));
     }
-    /**
-     * set limits (lx)
-     */
-    //% blockId="SET_INT_LIMITS" block="setinttlimits (lx)"
-    //% weight=80 blockGap=8
-    export function setIntLimits(low:number, high:number):void {
+     function setIntLimits(low:number, high:number):void {
         setreg(0x04, low & 0xFF);
         setreg(0x05, low >> 8);
         setreg(0x06, high & 0xFF);
         setreg(0x07, high >> 8);
      }
-     export function setIntegrationTime(it:tcs34725IntegrationTime_t):void{
+    function setIntegrationTime(it:tcs34725IntegrationTime_t):void{
         setreg(TCS34725_ATIME, it);    /* Update the timing register */
         _tcs34725IntegrationTime = it; /* Update value placeholders */
     }
-    /**
-     * set  tcs34725  gain
-     */
-    //% blockId="SET_TCS34725_GAIN" block="setgain"
-    //% weight=100 blockGap=8 color=#000031
-    export function setGain(gain:tcs34725Gain_t):void{
+    function setGain(gain:tcs34725Gain_t):void{
         setreg(TCS34725_CONTROL, gain);  /* Update the timing register */
         _tcs34725Gain = gain;/* Update value placeholders */
     }
     /**
-     * init tcs34725 
+     * 初始化颜色传感器
      */
     //% blockId="INIT_TCS34725" block="init_module"
-    //% weight=100 blockGap=8 color=#000011
-    export function init_TCS34725(): number { 
+    //% weight=100 color=#000011
+    export function init_TCS34725(): void { 
         /* Make sure we're actually connected */
         let x:number;
         _tcs34725Gain=tcs34725Gain_t.TCS34725_GAIN_1X;
@@ -152,16 +133,15 @@ namespace TCS34725_I2C {
         x = getreg(TCS34725_ID);
         if ((x != 0x44) && (x != 0x10))
         {
-          return 0;
+          return;
         }
         _tcs34725Initialised = 1;
         setIntegrationTime(_tcs34725IntegrationTime);  /* Set default integration time and gain */
         setGain(_tcs34725Gain);
         enable(); /* Note: by default, the device is in power down mode on bootup */
-        return 1;
     }
     /**
-     * get raw data
+     * 从传感器读取原始颜色值.
      */
     //% weight=100 blockGap=8 color=#000011
     export function getRawData ():void{
@@ -192,7 +172,7 @@ namespace TCS34725_I2C {
         }
     }
     /**
-     * calculate color tempeture.
+     * 计算色温值.
      */
     //% blockId="CALCULATE_TEMPERATURE" block="calculate_color_temperature"
     //% weight=90 blockGap=8
@@ -222,13 +202,13 @@ namespace TCS34725_I2C {
         n = (100*xc - 33) / (18- 100*yc);
 
         /* Calculate the final CCT */
-        cct =((449* Math.pow(n, 3)) + (3525 * Math.pow(n, 2)) + (6823 * n) + 5520);
+        cct =((449* Math.pow(n, 3))/1000000 + (3525 * Math.pow(n, 2))/10000 + (6823 * n)/100 + 5520);
 
         /* Return the results in degrees Kelvin */
         return cct;
     }
     /**
-     * calculate lux.
+     * 计算光强值.
      */
     //% blockId="CALCULATE_LUX" block="calculateLux"
     //% weight=90 blockGap=8
@@ -237,11 +217,10 @@ namespace TCS34725_I2C {
           /* This only uses RGB ... how can we integrate clear or calculate lux */
           /* based exclusively on clear since this might be more reliable?      */
           illuminance = (-32* r + 157 * g -73 * b)/100;
-    
           return illuminance;
     }
      /**
-     * get r color data.
+     * 计算红色值.
      */
     //% blockId="GET_R_COLOR_DATA" block="get_r_data"
     //% weight=90 blockGap=8
@@ -249,17 +228,17 @@ namespace TCS34725_I2C {
         return r;
   }
        /**
-     * get G color data.
+     * 计算绿色值.
      */
-    //% blockId="GET_G_COLOR_DATA" block="get_G_data"
+    //% blockId="GET_G_COLOR_DATA" block="get_g_data"
     //% weight=90 blockGap=8
     export function get_g_data() : number{
         return g;
   }
        /**
-     * get B color data.
+     * 计算蓝色值.
      */
-    //% blockId="GET_B_COLOR_DATA" block="get_B_data"
+    //% blockId="GET_B_COLOR_DATA" block="get_b_data"
     //% weight=90 blockGap=8
     export function get_b_data() : number{
         return b;
