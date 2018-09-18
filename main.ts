@@ -18,7 +18,7 @@ enum tcs34725IntegrationTime_t
 /**
  * 自定义图形块
  */
-//% weight=100 color=#0855AA icon="O" block="TCS34725"
+//% weight=100 color=#0855AA icon="O" block="TCS34725颜色传感器"
 namespace TCS34725_I2C {
     let TCS34725_ADDRESS  = 0x29;
     let TCS34725_COMMAND_BIT = 0x80;
@@ -123,7 +123,7 @@ namespace TCS34725_I2C {
     /**
      * 初始化颜色传感器
      */
-    //% blockId="INIT_TCS34725" block="init_module"
+    //% blockId="INIT_TCS34725" block="初始化颜色传感器"
     //% weight=100 color=#000011
     export function init_TCS34725(): void { 
         /* Make sure we're actually connected */
@@ -143,7 +143,7 @@ namespace TCS34725_I2C {
     /**
      * 从传感器读取原始颜色值.
      */
-    //% weight=100 blockGap=8 color=#000011
+    //% weight=100 color=#000011 block="从传感器读取原始颜色值"
     export function getRawData ():void{
         c = getUInt16LE(TCS34725_CDATAL);
         r = getUInt16LE(TCS34725_RDATAL);
@@ -174,7 +174,7 @@ namespace TCS34725_I2C {
     /**
      * 计算色温值.
      */
-    //% blockId="CALCULATE_TEMPERATURE" block="calculate_color_temperature"
+    //% blockId="CALCULATE_TEMPERATURE" block="计算色温值"
     //% weight=90 blockGap=8
     export function calculateColorTemperature():number{
 
@@ -210,7 +210,7 @@ namespace TCS34725_I2C {
     /**
      * 计算光强值.
      */
-    //% blockId="CALCULATE_LUX" block="calculateLux"
+    //% blockId="CALCULATE_LUX" block="计算光强值"
     //% weight=90 blockGap=8
     export function calculateLux() : number{
           let illuminance:number;
@@ -222,7 +222,7 @@ namespace TCS34725_I2C {
      /**
      * 计算红色值.
      */
-    //% blockId="GET_R_COLOR_DATA" block="get_r_data"
+    //% blockId="GET_R_COLOR_DATA" block="计算红色值"
     //% weight=90 blockGap=8
     export function get_r_data() : number{
         return r;
@@ -230,7 +230,7 @@ namespace TCS34725_I2C {
        /**
      * 计算绿色值.
      */
-    //% blockId="GET_G_COLOR_DATA" block="get_g_data"
+    //% blockId="GET_G_COLOR_DATA" block="计算绿色值"
     //% weight=90 blockGap=8
     export function get_g_data() : number{
         return g;
@@ -238,7 +238,7 @@ namespace TCS34725_I2C {
        /**
      * 计算蓝色值.
      */
-    //% blockId="GET_B_COLOR_DATA" block="get_b_data"
+    //% blockId="GET_B_COLOR_DATA" block="计算蓝色值"
     //% weight=90 blockGap=8
     export function get_b_data() : number{
         return b;
